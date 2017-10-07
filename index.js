@@ -1,9 +1,2 @@
-
-module.exports = {
-  get self() {
-    return require('./js/self').default;
-  },
-  get Worker() {
-    return require('./js/worker').default;
-  },
-}
+export {default as Worker} from './js/worker';
+export {default as self} from './js/self';

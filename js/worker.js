@@ -1,31 +1,26 @@
-import {
-  NativeModules,
-  DeviceEventEmitter,
-} from 'react-native';
+import {NativeModules, NativeEventEmitter} from 'react-native';
 
-const { WorkerManager } = NativeModules;
+const NativeManager = NativeModules.RNWorkerManager;
+const NativeEvents = new NativeEventEmitter(NativeManager);
+
+let nextKey = 0;
 
 export default class Worker {
-  constructor(jsPath) {
-    if (!jsPath || !jsPath.endsWith('.js')) {
-      throw new Error("Invalid worker path. Only js files are supported");
-    }
-
-    this.id = WorkerManager.startWorker(jsPath.replace(".js", ""))
-      .then(id => {
-        DeviceEventEmitter.addListener(`Worker${id}`, (message) => {
-          !!message && this.onmessage && this.onmessage(message);
-        });
-        return id;
-      })
-      .catch(err => { throw new Error(err) });
+  async constructor(root, resource) {
+    this.key = nextKey++;
+    await WorkerManager.startWorker(this.key, root, resource);
+    this.subscription = NativeEvents.addListener(
+      `message:${this.key}`,
+      message => this.onmessage && this.onmessage(message),
+    );
   }
 
   postMessage(message) {
-    this.id.then(id => WorkerManager.postWorkerMessage(id, message));
+    WorkerManager.postMessage(this.key, message);
   }
 
   terminate() {
-    this.id.then(WorkerManager.stopWorker);
+    NativeEvents.removeListener(this.subscription);
+    WorkerManager.stopWorker(this.key);
   }
 }
