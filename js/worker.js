@@ -6,21 +6,26 @@ const NativeEvents = new NativeEventEmitter(NativeManager);
 let nextKey = 0;
 
 export default class Worker {
-  async constructor(root, resource) {
+  constructor(root, resource) {
     this.key = nextKey++;
-    await WorkerManager.startWorker(this.key, root, resource);
     this.subscription = NativeEvents.addListener(
-      `message:${this.key}`,
-      message => this.onmessage && this.onmessage(message),
+      'message',
+      ({key, message}) => {
+        if (this.onmessage && this.key === key) {
+          this.onmessage(message);
+        }
+      },
     );
+
+    NativeManager.startWorker(this.key, root, resource);
   }
 
   postMessage(message) {
-    WorkerManager.postMessage(this.key, message);
+    NativeManager.postMessage(this.key, message);
   }
 
   terminate() {
     NativeEvents.removeListener(this.subscription);
-    WorkerManager.stopWorker(this.key);
+    NativeManager.stopWorker(this.key);
   }
 }

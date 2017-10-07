@@ -28,6 +28,11 @@ RCT_EXPORT_MODULE();
   _workers = nil;
 }
 
+- (NSArray<NSString *> *)supportedEvents
+{
+  return @[@"message"];
+}
+
 RCT_REMAP_METHOD(startWorker,
                  key:(nonnull NSNumber *)key
                  root:(NSString *)root
@@ -60,7 +65,10 @@ RCT_EXPORT_METHOD(postMessage:(nonnull NSNumber *)key
 {
   RNWorker *worker = _workers[key];
   RCTAssert(worker, @"Expected worker for key");
-  [worker sendEventWithName:@"message" body:message];
+  NSMutableDictionary *body = [NSMutableDictionary dictionary];
+  body[@"key"] = key;
+  body[@"message"] = message;
+  [worker sendEventWithName:@"message" body:body];
 }
 
 @end

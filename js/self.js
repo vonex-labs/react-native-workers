@@ -4,11 +4,12 @@ const NativeWorker = NativeModules.RNWorker;
 const NativeEvents = new NativeEventEmitter(NativeWorker);
 
 const self = {
-  postMessage: NativeManager.postMessage,
+  postMessage: NativeWorker.postMessage,
 };
 
-NativeEvents.addListener('message', message => {
-  self.onmessage && self.onmessage(message);
-});
+NativeEvents.addListener(
+  'message',
+  ({message}) => self.onmessage && self.onmessage(message),
+);
 
 export default self;
