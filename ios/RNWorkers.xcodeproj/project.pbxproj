@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9F97657B1CDC88260091EE06 /* RNWorkerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F9765771CDC88260091EE06 /* RNWorkerManager.m */; };
-		9F97657C1CDC88260091EE06 /* RNWorker.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F97657A1CDC88260091EE06 /* RNWorker.m */; };
+		36B2008C1F8C2BFF003148C6 /* RNWorkersInstanceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B200881F8C2BFF003148C6 /* RNWorkersInstanceManager.m */; };
+		36B2008D1F8C2BFF003148C6 /* RNWorkersManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B2008B1F8C2BFF003148C6 /* RNWorkersManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -24,11 +24,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		36B200881F8C2BFF003148C6 /* RNWorkersInstanceManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNWorkersInstanceManager.m; sourceTree = "<group>"; };
+		36B200891F8C2BFF003148C6 /* RNWorkersManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNWorkersManager.h; sourceTree = "<group>"; };
+		36B2008A1F8C2BFF003148C6 /* RNWorkersInstanceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNWorkersInstanceManager.h; sourceTree = "<group>"; };
+		36B2008B1F8C2BFF003148C6 /* RNWorkersManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNWorkersManager.m; sourceTree = "<group>"; };
 		9F97656B1CDC87F00091EE06 /* libRNWorkers.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNWorkers.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		9F9765771CDC88260091EE06 /* RNWorkerManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNWorkerManager.m; sourceTree = "<group>"; };
-		9F9765781CDC88260091EE06 /* RNWorkerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNWorkerManager.h; sourceTree = "<group>"; };
-		9F9765791CDC88260091EE06 /* RNWorker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNWorker.h; sourceTree = "<group>"; };
-		9F97657A1CDC88260091EE06 /* RNWorker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNWorker.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,10 +45,10 @@
 		9F9765621CDC87EF0091EE06 = {
 			isa = PBXGroup;
 			children = (
-				9F9765781CDC88260091EE06 /* RNWorkerManager.h */,
-				9F9765771CDC88260091EE06 /* RNWorkerManager.m */,
-				9F9765791CDC88260091EE06 /* RNWorker.h */,
-				9F97657A1CDC88260091EE06 /* RNWorker.m */,
+				36B2008A1F8C2BFF003148C6 /* RNWorkersInstanceManager.h */,
+				36B200881F8C2BFF003148C6 /* RNWorkersInstanceManager.m */,
+				36B200891F8C2BFF003148C6 /* RNWorkersManager.h */,
+				36B2008B1F8C2BFF003148C6 /* RNWorkersManager.m */,
 				9F97656C1CDC87F00091EE06 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -117,8 +117,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9F97657C1CDC88260091EE06 /* RNWorker.m in Sources */,
-				9F97657B1CDC88260091EE06 /* RNWorkerManager.m in Sources */,
+				36B2008C1F8C2BFF003148C6 /* RNWorkersInstanceManager.m in Sources */,
+				36B2008D1F8C2BFF003148C6 /* RNWorkersManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

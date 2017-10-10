@@ -2,5 +2,5 @@
 #import <React/RCTEventEmitter.h>
 #import <React/RCTInvalidating.h>
 
-@interface RNWorkerManager : RCTEventEmitter <RCTBridgeModule, RCTInvalidating>
+@interface RNWorkersManager : RCTEventEmitter <RCTBridgeModule, RCTInvalidating>
 @end
