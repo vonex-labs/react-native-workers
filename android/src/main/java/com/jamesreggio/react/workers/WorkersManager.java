@@ -10,6 +10,7 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.modules.systeminfo.AndroidInfoHelpers;
 
 import java.util.HashMap;
 
@@ -17,9 +18,11 @@ import javax.annotation.Nullable;
 
 public class WorkersManager extends ReactContextBaseJavaModule {
 
-  private final HashMap<Integer, WorkersInstance> workers = new HashMap<>();
   private final ReactApplicationContext context;
   private final ReactPackage packages[];
+
+  private final HashMap<Integer, WorkersInstance> workers = new HashMap<>();
+  private final List<Integer> bundlerPorts = new ArrayList<>();
 
   public WorkersManager(
     final ReactApplicationContext context,
@@ -49,13 +52,15 @@ public class WorkersManager extends ReactContextBaseJavaModule {
   ) {
     Assertions.assertCondition(!this.workers.containsKey(key), "Key already in use");
 
+    final boolean hasBundlerPort = this.allocateBundlerPort(bundlerPort);
+
     final WorkersInstance worker = new WorkersInstance(
       key,
       context,
       this.packages,
       bundleRoot,
       bundleResource,
-      bundlerPort,
+      hasBundlerPort ? bundlerPort : null,
       promise
     );
 
@@ -100,6 +105,35 @@ public class WorkersManager extends ReactContextBaseJavaModule {
     this.context
       .getJSModule(WorkersManager.RCTDeviceEventEmitter.class)
       .emit(name, body);
+  }
+
+  /**
+   * Helpers
+   */
+
+  private boolean allocateBundlerPort(Integer port) {
+    if (port == 0) {
+      return false;
+    }
+
+    if (port == AndroidInfoHelpers.INSPECTOR_PROXY_PORT) {
+      Log.e(
+        WorkersPackage.TAG,
+        String.format("Port %d is already in use by the inspector", port)
+      );
+      return false;
+    }
+
+    if (this.bundlerPorts.contains(port)) {
+      Log.e(
+        WorkersPackage.TAG,
+        String.format("Port %d is already in use by another worker", port)
+      );
+      return false;
+    }
+
+    this.bundlerPorts.add(port);
+    return true;
   }
 
 }

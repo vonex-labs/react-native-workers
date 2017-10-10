@@ -8,12 +8,13 @@ import android.util.Log;
 
 import com.facebook.infer.annotation.Assertions;
 import com.facebook.infer.annotation.ThreadConfined;
-import com.facebook.react.BuildConfig;
+import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager.ReactInstanceEventListener;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
@@ -28,7 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class WorkersInstance implements ReactInstanceEventListener {
+public class WorkersInstance implements ReactInstanceEventListener, LifecycleEventListener {
 
   private static final List<Integer> bundlerPorts = new ArrayList<>();
 
@@ -54,9 +55,7 @@ public class WorkersInstance implements ReactInstanceEventListener {
 
     final Activity activity = parentContext.getCurrentActivity();
     final Application application = Assertions.assertNotNull(activity).getApplication();
-    final ReactNativeHost parentHost = Assertions.assertNotNull(application).getReactNativeHost();
-
-    final boolean hasBundlerPort = this.allocateBundlerPort(bundlerPort);
+    final ReactNativeHost parentHost = Assertions.assertNotNull((ReactApplication)application).getReactNativeHost();
 
     this.host = new ReactNativeHost(application) {
       @Override
@@ -71,7 +70,7 @@ public class WorkersInstance implements ReactInstanceEventListener {
 
       @Override
       public PackagerConnectionSettings getPackagerConnectionSettings() {
-        if (!hasBundlerPort) {
+        if (bundlerPort == null) {
           return null;
         }
 
@@ -84,7 +83,7 @@ public class WorkersInstance implements ReactInstanceEventListener {
 
       @Override
       public boolean getUseDeveloperSupport() {
-        return hasBundlerPort && parentHost.getUseDeveloperSupport();
+        return bundlerPort != null && parentHost.getUseDeveloperSupport();
       }
 
       @Override
@@ -100,31 +99,6 @@ public class WorkersInstance implements ReactInstanceEventListener {
         return null;
       }
     };
-  }
-
-  private boolean allocateBundlerPort(Integer port) {
-    if (port == 0) {
-      return false;
-    }
-
-    if (port == AndroidInfoHelpers.INSPECTOR_PROXY_PORT) {
-      Log.e(
-        WorkersPackage.TAG,
-        String.format("Port %d is already in use by the inspector", port)
-      );
-      return false;
-    }
-
-    if (WorkersInstance.bundlerPorts.contains(port)) {
-      Log.e(
-        WorkersPackage.TAG,
-        String.format("Port %d is already in use by another worker", port)
-      );
-      return false;
-    }
-
-    WorkersInstance.bundlerPorts.add(port);
-    return true;
   }
 
   /**
