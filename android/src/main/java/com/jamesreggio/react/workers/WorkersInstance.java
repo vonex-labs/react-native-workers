@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Application;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
 import com.facebook.infer.annotation.Assertions;
 import com.facebook.infer.annotation.ThreadConfined;
@@ -30,8 +29,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class WorkersInstance implements ReactInstanceEventListener, LifecycleEventListener {
-
-  private static final List<Integer> bundlerPorts = new ArrayList<>();
 
   private final Integer key;
   private final ReactApplicationContext parentContext;
@@ -64,8 +61,12 @@ public class WorkersInstance implements ReactInstanceEventListener, LifecycleEve
       }
 
      @Override
-     protected String getJSBundleFile() {
-       return bundleResource;
+     protected String getBundleAssetName() {
+       if (bundleResource == null) {
+         return null;
+       }
+
+       return String.format("%s.bundle", bundleResource);
      }
 
       @Override

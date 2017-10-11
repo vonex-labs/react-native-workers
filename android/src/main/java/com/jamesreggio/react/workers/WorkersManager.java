@@ -2,6 +2,7 @@ package com.jamesreggio.react.workers;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import com.facebook.infer.annotation.Assertions;
 import com.facebook.react.ReactPackage;
@@ -12,7 +13,9 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.modules.systeminfo.AndroidInfoHelpers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.annotation.Nullable;
 
