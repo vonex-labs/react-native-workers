@@ -1,3 +1,5 @@
+// support CodePush
+
 package com.jamesreggio.react.workers;
 
 import android.os.Handler;
@@ -122,7 +124,11 @@ public class WorkersManager extends ReactContextBaseJavaModule {
     if (port == AndroidInfoHelpers.INSPECTOR_PROXY_PORT) {
       Log.e(
         WorkersPackage.TAG,
-        String.format("Port %d is already in use by the inspector", port)
+        String.format(
+          "Bundler port %d is already in use by the inspector. " +
+          "Remote debugging is not possible without a unique port.",
+          port
+        )
       );
       return false;
     }
@@ -130,7 +136,11 @@ public class WorkersManager extends ReactContextBaseJavaModule {
     if (this.bundlerPorts.contains(port)) {
       Log.e(
         WorkersPackage.TAG,
-        String.format("Port %d is already in use by another worker", port)
+        String.format(
+          "Bundler port %d is already in use by another worker. " +
+          "Remote debugging is not possible without a unique port.",
+          port
+        )
       );
       return false;
     }

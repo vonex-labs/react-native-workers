@@ -1,4 +1,17 @@
+#import <React/RCTBridgeModule.h>
 #import <React/RCTDevSettings.h>
 
-@interface RNWorkersDevSettings : RCTDevSettings
+@interface RCTDevSettings ()
+// The `bridge` property must be defined on the RCTDevSettings (the superclass)
+// in order for its conditional logic about the development state to be accurate.
+// The `bridge` property is synthesized in the implementation (which is private),
+// so we explicitly declare its interface here.
+@property (nonatomic, weak) RCTBridge *bridge;
+
+// We override this method to raise a warning if the worker cannot be debugged.
+- (void)_remoteDebugSettingDidChange;
+@end
+
+@interface RNWorkersDevSettings : RCTDevSettings <RCTBridgeModule>
+- (instancetype)initWithBundleRoot:(NSString *)bundleRoot uniquePort:(BOOL)uniquePort;
 @end
