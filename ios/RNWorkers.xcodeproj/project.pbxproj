@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		36B2008C1F8C2BFF003148C6 /* RNWorkersInstanceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B200881F8C2BFF003148C6 /* RNWorkersInstanceManager.m */; };
 		36B2008D1F8C2BFF003148C6 /* RNWorkersManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B2008B1F8C2BFF003148C6 /* RNWorkersManager.m */; };
+		36C9BE771F8F10D100578BA8 /* RNWorkersBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 36C9BE741F8F10D100578BA8 /* RNWorkersBridge.m */; };
+		36C9BE781F8F10D100578BA8 /* RNWorkersDevSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 36C9BE761F8F10D100578BA8 /* RNWorkersDevSettings.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,6 +30,10 @@
 		36B200891F8C2BFF003148C6 /* RNWorkersManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNWorkersManager.h; sourceTree = "<group>"; };
 		36B2008A1F8C2BFF003148C6 /* RNWorkersInstanceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNWorkersInstanceManager.h; sourceTree = "<group>"; };
 		36B2008B1F8C2BFF003148C6 /* RNWorkersManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNWorkersManager.m; sourceTree = "<group>"; };
+		36C9BE731F8F10D100578BA8 /* RNWorkersDevSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNWorkersDevSettings.h; sourceTree = "<group>"; };
+		36C9BE741F8F10D100578BA8 /* RNWorkersBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNWorkersBridge.m; sourceTree = "<group>"; };
+		36C9BE751F8F10D100578BA8 /* RNWorkersBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNWorkersBridge.h; sourceTree = "<group>"; };
+		36C9BE761F8F10D100578BA8 /* RNWorkersDevSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNWorkersDevSettings.m; sourceTree = "<group>"; };
 		9F97656B1CDC87F00091EE06 /* libRNWorkers.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNWorkers.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -45,6 +51,10 @@
 		9F9765621CDC87EF0091EE06 = {
 			isa = PBXGroup;
 			children = (
+				36C9BE751F8F10D100578BA8 /* RNWorkersBridge.h */,
+				36C9BE741F8F10D100578BA8 /* RNWorkersBridge.m */,
+				36C9BE731F8F10D100578BA8 /* RNWorkersDevSettings.h */,
+				36C9BE761F8F10D100578BA8 /* RNWorkersDevSettings.m */,
 				36B2008A1F8C2BFF003148C6 /* RNWorkersInstanceManager.h */,
 				36B200881F8C2BFF003148C6 /* RNWorkersInstanceManager.m */,
 				36B200891F8C2BFF003148C6 /* RNWorkersManager.h */,
@@ -119,6 +129,8 @@
 			files = (
 				36B2008C1F8C2BFF003148C6 /* RNWorkersInstanceManager.m in Sources */,
 				36B2008D1F8C2BFF003148C6 /* RNWorkersManager.m in Sources */,
+				36C9BE781F8F10D100578BA8 /* RNWorkersDevSettings.m in Sources */,
+				36C9BE771F8F10D100578BA8 /* RNWorkersBridge.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

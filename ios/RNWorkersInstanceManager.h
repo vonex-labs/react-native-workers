@@ -1,8 +1,9 @@
 #import <React/RCTBridgeModule.h>
 #import <React/RCTEventEmitter.h>
-#import <React/RCTInvalidating.h>
 
-@interface RNWorkersInstanceManager : RCTEventEmitter <RCTBridgeModule, RCTInvalidating>
+@interface RNWorkersInstanceManager : RCTEventEmitter <RCTBridgeModule>
+- (void)stop;
+
 @property (nonatomic, strong) NSNumber *key;
 @property (nonatomic, strong) RCTPromiseResolveBlock startedBlock;
 @property (nonatomic, weak) RCTEventEmitter *parentManager;

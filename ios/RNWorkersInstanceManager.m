@@ -10,7 +10,7 @@ RCT_EXPORT_MODULE(WorkersInstanceManager);
   return @[@"message"];
 }
 
-- (void)invalidate {
+- (void)stop {
   [_strongBridge invalidate];
   _strongBridge = nil;
   _startedBlock = nil;

@@ -25,7 +25,7 @@ RCT_EXPORT_MODULE(WorkersManager);
 - (void)invalidate {
   for (NSNumber *key in _workers) {
     RNWorkersInstanceManager *worker = _workers[key];
-    [worker invalidate];
+    [worker stop];
   }
 
   [_workers removeAllObjects];
@@ -46,9 +46,18 @@ RCT_EXPORT_METHOD(startWorker:(nonnull NSNumber *)key
 {
   RCTAssert(!_workers[key], @"Key already in use");
   NSURL *workerURL = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:root fallbackResource:resource];
-  RCTBridge *workerBridge = [[RCTBridge alloc] initWithBundleURL:workerURL moduleProvider:nil launchOptions:nil];
 
+  if (port > 0) {
+    NSURLComponents *components = [NSURLComponents componentsWithURL:workerURL resolvingAgainstBaseURL:NO];
+    if (components.port.unsignedIntegerValue == kRCTBundleURLProviderDefaultPort) {
+      components.port = port;
+    }
+    workerURL = components.URL;
+  }
+
+  RCTBridge *workerBridge = [[RCTBridge alloc] initWithBundleURL:workerURL moduleProvider:nil launchOptions:nil];
   RNWorkersInstanceManager *worker = [workerBridge moduleForName:@"WorkersInstanceManager"];
+
   worker.key = key;
   worker.startedBlock = resolve;
   worker.parentManager = self;
@@ -61,7 +70,7 @@ RCT_EXPORT_METHOD(stopWorker:(nonnull NSNumber *)key)
 {
   RNWorkersInstanceManager *worker = _workers[key];
   RCTAssert(worker, @"Expected worker for key");
-  [worker invalidate];
+  [worker stop];
   [_workers removeObjectForKey:key];
 }
 
