@@ -60,8 +60,8 @@ RCT_EXPORT_METHOD(startWorker:(nonnull NSNumber *)key
         components.port = port;
         uniquePort = YES;
       }
+      workerURL = components.URL;
     }
-    workerURL = components.URL;
   }
 
   RCTBridge *workerBridge = [[RCTBridge alloc] initWithBundleURL:workerURL moduleProvider:^NSArray<id<RCTBridgeModule>> *{
