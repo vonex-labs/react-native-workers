@@ -7,10 +7,11 @@ const self = {
   postMessage(message = null) {
     try {
       message = JSON.stringify(message);
-      NativeModule.postMessage(message);
     } catch (error) {
       console.warn('Unable to stringify message', message, error);
     }
+
+    NativeModule.postMessage(message);
   },
 };
 
@@ -21,10 +22,11 @@ NativeEvents.addListener('message', ({message}) => {
 
   try {
     message = JSON.parse(message);
-    self.onmessage(message);
   } catch (error) {
     console.warn('Unable to parse message', message, error);
   }
+
+  self.onmessage(message);
 });
 
 // Signal that the worker is ready to receive messages.
