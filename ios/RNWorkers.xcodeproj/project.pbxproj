@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		362F7AE91F910FC6005735CC /* RNWorkersBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 362F7AE71F910FC6005735CC /* RNWorkersBridge.m */; };
 		36B2008C1F8C2BFF003148C6 /* RNWorkersInstanceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B200881F8C2BFF003148C6 /* RNWorkersInstanceManager.m */; };
 		36B2008D1F8C2BFF003148C6 /* RNWorkersManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 36B2008B1F8C2BFF003148C6 /* RNWorkersManager.m */; };
 		36C9BE781F8F10D100578BA8 /* RNWorkersDevSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 36C9BE761F8F10D100578BA8 /* RNWorkersDevSettings.m */; };
@@ -25,6 +26,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		362F7AE71F910FC6005735CC /* RNWorkersBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNWorkersBridge.m; sourceTree = "<group>"; };
+		362F7AE81F910FC6005735CC /* RNWorkersBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNWorkersBridge.h; sourceTree = "<group>"; };
 		36B200881F8C2BFF003148C6 /* RNWorkersInstanceManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNWorkersInstanceManager.m; sourceTree = "<group>"; };
 		36B200891F8C2BFF003148C6 /* RNWorkersManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNWorkersManager.h; sourceTree = "<group>"; };
 		36B2008A1F8C2BFF003148C6 /* RNWorkersInstanceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNWorkersInstanceManager.h; sourceTree = "<group>"; };
@@ -48,6 +51,8 @@
 		9F9765621CDC87EF0091EE06 = {
 			isa = PBXGroup;
 			children = (
+				362F7AE81F910FC6005735CC /* RNWorkersBridge.h */,
+				362F7AE71F910FC6005735CC /* RNWorkersBridge.m */,
 				36C9BE731F8F10D100578BA8 /* RNWorkersDevSettings.h */,
 				36C9BE761F8F10D100578BA8 /* RNWorkersDevSettings.m */,
 				36B2008A1F8C2BFF003148C6 /* RNWorkersInstanceManager.h */,
@@ -124,6 +129,7 @@
 			files = (
 				36B2008C1F8C2BFF003148C6 /* RNWorkersInstanceManager.m in Sources */,
 				36B2008D1F8C2BFF003148C6 /* RNWorkersManager.m in Sources */,
+				362F7AE91F910FC6005735CC /* RNWorkersBridge.m in Sources */,
 				36C9BE781F8F10D100578BA8 /* RNWorkersDevSettings.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

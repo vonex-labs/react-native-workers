@@ -3,8 +3,7 @@
 
 @implementation RNWorkersDevSettings
 {
-  NSString *_bundleRoot;
-  BOOL _uniquePort;
+  RNWorkersInstanceData *_data;
 }
 
 // We're replacing the stock implementation of RCTDevSettings for the worker bridge.
@@ -23,11 +22,10 @@
   return nil;
 }
 
-- (instancetype)initWithBundleRoot:(NSString *)bundleRoot uniquePort:(BOOL)uniquePort
+- (instancetype)initWithData:(RNWorkersInstanceData *)data
 {
   if (self = [self init]) {
-    _bundleRoot = bundleRoot;
-    _uniquePort = uniquePort;
+    _data = data;
   }
   return self;
 }
@@ -39,7 +37,7 @@
 
 - (BOOL)isRemoteDebuggingAvailable
 {
-  return _uniquePort && super.isRemoteDebuggingAvailable;
+  return _data.bundlerPort && super.isRemoteDebuggingAvailable;
 }
 
 - (void)_remoteDebugSettingDidChange
@@ -49,7 +47,7 @@
       @"The worker with bundle root %@ cannot be debugged remotely because it does "
        "not have a unique bundler instance. Start another bundler on a unique port "
        "(using the --port argument), then provide that port to the Worker constructor.",
-      _bundleRoot
+      _data.bundleRoot
     );
     return;
   }
