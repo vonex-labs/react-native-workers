@@ -25,6 +25,10 @@ RCT_EXPORT_MODULE(WorkersManager);
   return @[@"message"];
 }
 
++ (BOOL)requiresMainQueueSetup {
+  return YES;
+}
+
 - (instancetype)init
 {
   if (self = [super init]) {
