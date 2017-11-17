@@ -30,14 +30,12 @@
   return self;
 }
 
-- (BOOL)isShakeToShowDevMenuEnabled
-{
+- (BOOL)isShakeToShowDevMenuEnabled {
   return NO;
 }
 
-- (BOOL)isRemoteDebuggingAvailable
-{
-  return _data.bundlerPort && super.isRemoteDebuggingAvailable;
+- (BOOL)isRemoteDebuggingAvailable {
+  return NO; // _data.bundlerPort && super.isRemoteDebuggingAvailable;
 }
 
 - (void)_remoteDebugSettingDidChange
