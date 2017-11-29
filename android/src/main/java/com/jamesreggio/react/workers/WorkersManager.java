@@ -117,7 +117,36 @@ public class WorkersManager extends ReactContextBaseJavaModule {
    */
 
   private boolean allocateBundlerPort(Integer port) {
-    return false;
+    if (port == 0) {
+      return false;
+    }
+
+    if (port == 8081) {
+      Log.e(
+              WorkersPackage.TAG,
+              String.format(
+                      "Bundler port %d is already in use by the inspector. " +
+                              "Remote debugging is not possible without a unique port.",
+                      port
+              )
+      );
+      return false;
+    }
+
+    if (this.bundlerPorts.contains(port)) {
+      Log.e(
+              WorkersPackage.TAG,
+              String.format(
+                      "Bundler port %d is already in use by another worker. " +
+                              "Remote debugging is not possible without a unique port.",
+                      port
+              )
+      );
+      return false;
+    }
+
+    this.bundlerPorts.add(port);
+    return true;
   }
 
 }
