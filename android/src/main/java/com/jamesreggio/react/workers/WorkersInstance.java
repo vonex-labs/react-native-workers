@@ -60,14 +60,14 @@ public class WorkersInstance implements ReactInstanceEventListener, LifecycleEve
         return bundleRoot;
       }
 
-     @Override
-     protected String getBundleAssetName() {
-       if (bundleResource == null) {
-         return null;
-       }
+      @Override
+      protected String getBundleAssetName() {
+        if (bundleResource == null) {
+          return null;
+        }
 
-       return String.format("%s.bundle", bundleResource);
-     }
+        return String.format("%s.bundle", bundleResource);
+      }
 
       @Override
       public boolean getUseDeveloperSupport() {
