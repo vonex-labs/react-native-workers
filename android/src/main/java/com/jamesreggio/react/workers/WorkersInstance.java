@@ -68,17 +68,6 @@ public class WorkersInstance implements ReactInstanceEventListener, LifecycleEve
 
        return String.format("%s.bundle", bundleResource);
      }
-      @Override
-      public PackagerConnectionSettings getPackagerConnectionSettings() {
-        if (bundlerPort == null) {
-          return null;
-        }
-
-        return new PackagerConnectionSettings(
-          parentContext
-        );
-      }
-
 
       @Override
       public boolean getUseDeveloperSupport() {
