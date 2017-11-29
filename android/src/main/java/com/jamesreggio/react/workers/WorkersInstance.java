@@ -68,7 +68,6 @@ public class WorkersInstance implements ReactInstanceEventListener, LifecycleEve
 
        return String.format("%s.bundle", bundleResource);
      }
-
       @Override
       public PackagerConnectionSettings getPackagerConnectionSettings() {
         if (bundlerPort == null) {
@@ -76,15 +75,14 @@ public class WorkersInstance implements ReactInstanceEventListener, LifecycleEve
         }
 
         return new PackagerConnectionSettings(
-          parentContext,
-          AndroidInfoHelpers.getServerIpAddress(bundlerPort),
-          null // Inspector is not supported for workers.
+          parentContext
         );
       }
 
+
       @Override
       public boolean getUseDeveloperSupport() {
-        return bundlerPort != null && parentHost.getUseDeveloperSupport();
+        return false;
       }
 
       @Override
