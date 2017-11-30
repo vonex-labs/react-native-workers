@@ -10,14 +10,17 @@ import com.facebook.infer.annotation.ThreadConfined;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager.ReactInstanceEventListener;
 import com.facebook.react.ReactInstanceManager;
+import com.facebook.react.ReactInstanceManagerBuilder;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.JSBundleLoader;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.common.LifecycleState;
 import com.facebook.react.modules.systeminfo.AndroidInfoHelpers;
 import com.facebook.react.packagerconnection.PackagerConnectionSettings;
 import com.facebook.react.shell.MainReactPackage;
@@ -71,7 +74,40 @@ public class WorkersInstance implements ReactInstanceEventListener, LifecycleEve
 
       @Override
       public boolean getUseDeveloperSupport() {
-        return parentHost.getUseDeveloperSupport();
+        return false;
+//        return parentHost.getUseDeveloperSupport();
+      }
+
+      @Override
+      protected ReactInstanceManager createReactInstanceManager() {
+        String url = "http://" + AndroidInfoHelpers.getServerHost() + "/" + bundleRoot + ".bundle?platform=android&dev=true&minify=false";
+        String cachedPath = "/data/user/0/com.simpleexample/files/" + bundleRoot + ".js";
+        return reactNative50DefaultBuilder()
+                .setJSBundleLoader(JSBundleLoader.createCachedBundleFromNetworkLoader(url, cachedPath))
+                .build();
+      }
+
+      private ReactInstanceManagerBuilder reactNative50DefaultBuilder() {
+        ReactInstanceManagerBuilder builder = ReactInstanceManager.builder()
+                .setApplication(application)
+                .setJSMainModulePath(getJSMainModuleName())
+                .setUseDeveloperSupport(getUseDeveloperSupport())
+                .setRedBoxHandler(getRedBoxHandler())
+                .setJavaScriptExecutorFactory(getJavaScriptExecutorFactory())
+                .setUIImplementationProvider(getUIImplementationProvider())
+                .setInitialLifecycleState(LifecycleState.BEFORE_CREATE);
+
+        for (ReactPackage reactPackage : getPackages()) {
+          builder.addPackage(reactPackage);
+        }
+
+        String jsBundleFile = getJSBundleFile();
+        if (jsBundleFile != null) {
+          builder.setJSBundleFile(jsBundleFile);
+        } else {
+          builder.setBundleAssetName(Assertions.assertNotNull(getBundleAssetName()));
+        }
+        return builder;
       }
 
       @Override
