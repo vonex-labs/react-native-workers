@@ -13,7 +13,7 @@ export default class App extends Component<{}> {
   worker = null;
 
   componentDidMount() {
-    this.worker= new Worker('worker.thread', null, 8081);
+    this.worker = new Worker('worker.thread', 'worker.thread', 8082);
     this.worker.onmessage = this.handleMessage;
   }
 
@@ -38,6 +38,7 @@ export default class App extends Component<{}> {
         </Text>
 
         <Button title="Send Message To Worker Thread" onPress={() => {
+          console.log('posting hello!')
           this.worker.postMessage('Hello')
         }} />
 
