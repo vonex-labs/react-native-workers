@@ -74,8 +74,8 @@ public class WorkersInstance implements ReactInstanceEventListener, LifecycleEve
 
       @Override
       public boolean getUseDeveloperSupport() {
-        return false;
-//        return parentHost.getUseDeveloperSupport();
+//        return false;
+        return parentHost.getUseDeveloperSupport();
       }
 
       @Override
