@@ -117,7 +117,7 @@ public class WorkersInstance implements ReactInstanceEventListener, LifecycleEve
       @Override
       protected List<ReactPackage> getPackages() {
         final ArrayList<ReactPackage> allPackages = new ArrayList<>(Arrays.asList(packages));
-        allPackages.add(0, new WorkersPackage(packages));
+        allPackages.add(0, new WorkersInstancePackage());
         allPackages.add(0, new MainReactPackage());
         return allPackages;
       }
@@ -138,14 +138,14 @@ public class WorkersInstance implements ReactInstanceEventListener, LifecycleEve
     this.manager = this.host.getReactInstanceManager();
     this.manager.addReactInstanceEventListener(this);
 
-    // HACK.
-    // This forces react to actually load the worker code from the packager...
-    // Without this, it never asks, and the worker code is never loaded/found.
-    // It seems they have some hardcoded paths deep within their code, I can't
-    // find a way to play nicely with what they are doing.
-    host.getReactInstanceManager().getDevSupportManager().handleReloadJS();
-
-    if (!this.manager.hasStartedCreatingInitialContext()) {
+    if (this.host.getUseDeveloperSupport()) {
+      // HACK.
+      // This forces react to actually load the worker code from the packager...
+      // Without this, it never asks, and the worker code is never loaded/found.
+      // It seems they have some hardcoded paths deep within their code, I can't
+      // find a way to play nicely with what they are doing.
+      host.getReactInstanceManager().getDevSupportManager().handleReloadJS();
+    } else if (!this.manager.hasStartedCreatingInitialContext()) {
       this.manager.createReactContextInBackground();
     }
 
@@ -218,11 +218,12 @@ public class WorkersInstance implements ReactInstanceEventListener, LifecycleEve
 
   @Override
   public void onReactContextInitialized(ReactContext context) {
-    context
-      .getNativeModule(WorkersInstanceManager.class)
-      .initialize(this.key, this.parentContext, this.startedPromise);
-
-    this.startedPromise = null;
+    if (this.startedPromise != null) {
+      context
+          .getNativeModule(WorkersInstanceManager.class)
+          .initialize(this.key, this.parentContext, this.startedPromise);
+      this.startedPromise = null;
+    }
   }
 
 }
