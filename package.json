@@ -1,6 +1,6 @@
 {
   "name": "@staltz/react-native-workers",
-  "version": "0.4.6",
+  "version": "0.5.0",
   "description": "React Native web workers",
   "author": "staltz",
   "license": "MIT",
@@ -22,4 +22,7 @@
     "ios",
     "android"
   ],
+  "publishConfig": {
+    "access": "public"
+  }
 }
