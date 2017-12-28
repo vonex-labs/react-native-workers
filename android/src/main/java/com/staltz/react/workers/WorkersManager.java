@@ -1,6 +1,6 @@
 // support CodePush
 
-package com.jamesreggio.react.workers;
+package com.staltz.react.workers;
 
 import android.os.Handler;
 import android.os.Looper;
