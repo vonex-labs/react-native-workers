@@ -74,45 +74,31 @@ public class WorkersInstance implements ReactInstanceEventListener, LifecycleEve
 
       @Override
       public boolean getUseDeveloperSupport() {
-//        return false;
-        return parentHost.getUseDeveloperSupport();
+        return false;
       }
 
-//      @Override
-//      protected ReactInstanceManager createReactInstanceManager() {
-//        String url = "http://" + AndroidInfoHelpers.getServerHost() + "/" + bundleRoot + ".bundle?platform=android&dev=true&minify=false";
-//        String cachedPath = "/data/user/0/com.simpleexample/files/" + bundleRoot + ".js";
-//        ReactInstanceManager manager = reactNative50DefaultBuilder()
-//                .setJSBundleLoader(JSBundleLoader.createCachedBundleFromNetworkLoader(url, cachedPath))
-//                .build();
-//
-//        manager.getDevSupportManager().handleReloadJS();
-//
-//        return manager;
-//      }
+      @Override
+      protected ReactInstanceManager createReactInstanceManager() {
+        ReactInstanceManagerBuilder builder = ReactInstanceManager.builder()
+                .setApplication(application)
+                .setJSMainModulePath(getJSMainModuleName())
+                .setUseDeveloperSupport(getUseDeveloperSupport())
+                .setRedBoxHandler(getRedBoxHandler())
+                .setJavaScriptExecutorFactory(getJavaScriptExecutorFactory())
+                .setInitialLifecycleState(LifecycleState.BEFORE_CREATE);
 
-//      private ReactInstanceManagerBuilder reactNative50DefaultBuilder() {
-//        ReactInstanceManagerBuilder builder = ReactInstanceManager.builder()
-//                .setApplication(application)
-//                .setJSMainModulePath(getJSMainModuleName())
-//                .setUseDeveloperSupport(getUseDeveloperSupport())
-//                .setRedBoxHandler(getRedBoxHandler())
-//                .setJavaScriptExecutorFactory(getJavaScriptExecutorFactory())
-//                .setUIImplementationProvider(getUIImplementationProvider())
-//                .setInitialLifecycleState(LifecycleState.BEFORE_CREATE);
-//
-//        for (ReactPackage reactPackage : getPackages()) {
-//          builder.addPackage(reactPackage);
-//        }
-//
-//        String jsBundleFile = getJSBundleFile();
-//        if (jsBundleFile != null) {
-//          builder.setJSBundleFile(jsBundleFile);
-//        } else {
-//          builder.setBundleAssetName(Assertions.assertNotNull(getBundleAssetName()));
-//        }
-//        return builder;
-//      }
+        for (ReactPackage reactPackage : getPackages()) {
+          builder.addPackage(reactPackage);
+        }
+
+        String jsBundleFile = getJSBundleFile();
+        if (jsBundleFile != null) {
+          builder.setJSBundleFile(jsBundleFile);
+        } else {
+          builder.setBundleAssetName(Assertions.assertNotNull(getBundleAssetName()));
+        }
+        return builder.build();
+      }
 
       @Override
       protected List<ReactPackage> getPackages() {
@@ -138,14 +124,7 @@ public class WorkersInstance implements ReactInstanceEventListener, LifecycleEve
     this.manager = this.host.getReactInstanceManager();
     this.manager.addReactInstanceEventListener(this);
 
-    if (this.host.getUseDeveloperSupport()) {
-      // HACK.
-      // This forces react to actually load the worker code from the packager...
-      // Without this, it never asks, and the worker code is never loaded/found.
-      // It seems they have some hardcoded paths deep within their code, I can't
-      // find a way to play nicely with what they are doing.
-      host.getReactInstanceManager().getDevSupportManager().handleReloadJS();
-    } else if (!this.manager.hasStartedCreatingInitialContext()) {
+    if (!this.manager.hasStartedCreatingInitialContext()) {
       this.manager.createReactContextInBackground();
     }
 
