@@ -1,6 +1,6 @@
 {
   "name": "@staltz/react-native-workers",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "React Native web workers",
   "author": "staltz",
   "license": "MIT",
