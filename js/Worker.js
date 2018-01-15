@@ -22,7 +22,7 @@ export default class Worker {
         }
 
         try {
-          message = JSON.parse(message);
+          message = {data: JSON.parse(message)};
         } catch (error) {
           console.warn('Unable to parse message', message, error);
         }
