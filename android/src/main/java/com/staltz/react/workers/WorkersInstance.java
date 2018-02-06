@@ -35,9 +35,13 @@ public class WorkersInstance implements ReactInstanceEventListener, LifecycleEve
 
   private final Integer key;
   private final ReactApplicationContext parentContext;
-  private final ReactNativeHost host;
-
+  private final ReactPackage[] packages;
+  private final String bundleRoot;
+  private final String bundleResource;
+  private final Integer bundlerPort;
   private Promise startedPromise;
+
+  private ReactNativeHost host;
   private ReactInstanceManager manager;
 
   public WorkersInstance(
@@ -51,8 +55,61 @@ public class WorkersInstance implements ReactInstanceEventListener, LifecycleEve
   ) {
     this.key = key;
     this.parentContext = parentContext;
+    this.packages = packages;
+    this.bundleRoot = bundleRoot;
+    this.bundleResource = bundleResource;
+    this.bundlerPort = bundlerPort;
     this.startedPromise = startedPromise;
 
+    if (canInitialize() && !isInitialized()) {
+      initialize();
+    } else {
+      tryDelayedInitialize();
+    }
+  }
+
+  private void tryDelayedInitialize() {
+    new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+      @Override
+      public void run() {
+        if (isInitialized()) return;
+        if (canInitialize() && !isInitialized()) {
+          initialize();
+        } else {
+          tryDelayedInitialize();
+        }
+      }
+    }, 75);
+  }
+
+  private void tryDelayedStart() {
+    new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+      @Override
+      public void run() {
+        if (isInitialized()) {
+          start();
+          return;
+        }
+        if (canInitialize() && !isInitialized()) {
+          initialize();
+          start();
+        } else {
+          tryDelayedStart();
+        }
+      }
+    }, 75);
+  }
+
+  private boolean canInitialize() {
+    final Activity activity = parentContext.getCurrentActivity();
+    return activity != null;
+  }
+
+  private boolean isInitialized() {
+    return this.host != null;
+  }
+
+  private void initialize() {
     final Activity activity = parentContext.getCurrentActivity();
     final Application application = Assertions.assertNotNull(activity).getApplication();
     final ReactNativeHost parentHost = Assertions.assertNotNull((ReactApplication)application).getReactNativeHost();
@@ -121,6 +178,10 @@ public class WorkersInstance implements ReactInstanceEventListener, LifecycleEve
 
   @ThreadConfined(UI)
   public void start() {
+    if (!isInitialized()) {
+      tryDelayedStart();
+      return;
+    }
     this.manager = this.host.getReactInstanceManager();
     this.manager.addReactInstanceEventListener(this);
 
