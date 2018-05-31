@@ -21,12 +21,6 @@ export default class Worker {
           return;
         }
 
-        try {
-          message = {data: JSON.parse(message)};
-        } catch (error) {
-          console.warn('Unable to parse message', message, error);
-        }
-
         this.onmessage(message);
       },
     );
@@ -36,15 +30,9 @@ export default class Worker {
     );
   }
 
-  async postMessage(message = null) {
+  async postMessage(message) {
     if (this.terminated) {
       return;
-    }
-
-    try {
-      message = JSON.stringify(message);
-    } catch (error) {
-      console.warn('Unable to stringify message', message, error);
     }
 
     await this.started;

@@ -4,13 +4,7 @@ const NativeModule = NativeModules.WorkersInstanceManager;
 const NativeEvents = new NativeEventEmitter(NativeModule);
 
 const self = {
-  postMessage(message = null) {
-    try {
-      message = JSON.stringify(message);
-    } catch (error) {
-      console.warn('Unable to stringify message', message, error);
-    }
-
+  postMessage(message) {
     NativeModule.postMessage(message);
   },
 };
@@ -18,12 +12,6 @@ const self = {
 NativeEvents.addListener('message', ({message}) => {
   if (!self.onmessage) {
     return;
-  }
-
-  try {
-    message = {data: JSON.parse(message)};
-  } catch (error) {
-    console.warn('Unable to parse message', message, error);
   }
 
   self.onmessage(message);
