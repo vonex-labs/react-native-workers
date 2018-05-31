@@ -13,7 +13,7 @@ export default class App extends Component<{}> {
   worker = null;
 
   componentDidMount() {
-    this.worker = new Worker('worker.thread', 'worker.thread', 8082);
+    this.worker = new Worker('worker.thread', 'worker.thread', 8081);
     this.worker.onmessage = this.handleMessage;
   }
 

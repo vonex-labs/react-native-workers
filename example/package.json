@@ -9,8 +9,8 @@
     "build-thread-android": "node node_modules/react-native/local-cli/cli.js bundle --dev false --assets-dest ./android/app/src/main/res/ --entry-file worker.thread.js --platform android --bundle-output ./android/app/src/main/assets/worker.thread.bundle"
   },
   "dependencies": {
-    "react": "^16.0.0",
-    "react-native": "0.50.1",
+    "react": "^16.3.2",
+    "react-native": "^0.55.4",
     "react-native-workers": "file:../"
   },
   "devDependencies": {
