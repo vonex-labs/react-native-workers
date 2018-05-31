@@ -1,8 +1,8 @@
 {
-  "name": "@staltz/react-native-workers",
+  "name": "react-native-workers",
   "version": "0.5.3",
   "description": "React Native web workers",
-  "author": "staltz",
+  "author": "Garrett Mitchell",
   "license": "MIT",
   "main": "index.js",
   "peerDependencies": {
