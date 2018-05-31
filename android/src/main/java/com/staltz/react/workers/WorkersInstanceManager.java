@@ -1,4 +1,4 @@
-package com.jamesreggio.react.workers;
+package com.staltz.react.workers;
 
 import android.util.Log;
 

@@ -3,7 +3,7 @@ package com.simpleexample;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import com.jamesreggio.react.workers.WorkersPackage;
+import com.staltz.react.workers.WorkersPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;

@@ -1,4 +1,4 @@
-import { self } from 'react-native-workers';
+import { self } from 'react-native-workers/self';
 import './config';
 
 let count = 0;

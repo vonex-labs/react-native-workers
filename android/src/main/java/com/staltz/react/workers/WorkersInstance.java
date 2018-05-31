@@ -1,4 +1,4 @@
-package com.jamesreggio.react.workers;
+package com.staltz.react.workers;
 
 import android.app.Activity;
 import android.app.Application;
@@ -35,9 +35,13 @@ public class WorkersInstance implements ReactInstanceEventListener, LifecycleEve
 
   private final Integer key;
   private final ReactApplicationContext parentContext;
-  private final ReactNativeHost host;
-
+  private final ReactPackage[] packages;
+  private final String bundleRoot;
+  private final String bundleResource;
+  private final Integer bundlerPort;
   private Promise startedPromise;
+
+  private ReactNativeHost host;
   private ReactInstanceManager manager;
 
   public WorkersInstance(
@@ -51,8 +55,61 @@ public class WorkersInstance implements ReactInstanceEventListener, LifecycleEve
   ) {
     this.key = key;
     this.parentContext = parentContext;
+    this.packages = packages;
+    this.bundleRoot = bundleRoot;
+    this.bundleResource = bundleResource;
+    this.bundlerPort = bundlerPort;
     this.startedPromise = startedPromise;
 
+    if (canInitialize() && !isInitialized()) {
+      initialize();
+    } else {
+      tryDelayedInitialize();
+    }
+  }
+
+  private void tryDelayedInitialize() {
+    new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+      @Override
+      public void run() {
+        if (isInitialized()) return;
+        if (canInitialize() && !isInitialized()) {
+          initialize();
+        } else {
+          tryDelayedInitialize();
+        }
+      }
+    }, 75);
+  }
+
+  private void tryDelayedStart() {
+    new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+      @Override
+      public void run() {
+        if (isInitialized()) {
+          start();
+          return;
+        }
+        if (canInitialize() && !isInitialized()) {
+          initialize();
+          start();
+        } else {
+          tryDelayedStart();
+        }
+      }
+    }, 75);
+  }
+
+  private boolean canInitialize() {
+    final Activity activity = parentContext.getCurrentActivity();
+    return activity != null;
+  }
+
+  private boolean isInitialized() {
+    return this.host != null;
+  }
+
+  private void initialize() {
     final Activity activity = parentContext.getCurrentActivity();
     final Application application = Assertions.assertNotNull(activity).getApplication();
     final ReactNativeHost parentHost = Assertions.assertNotNull((ReactApplication)application).getReactNativeHost();
@@ -74,50 +131,36 @@ public class WorkersInstance implements ReactInstanceEventListener, LifecycleEve
 
       @Override
       public boolean getUseDeveloperSupport() {
-//        return false;
-        return parentHost.getUseDeveloperSupport();
+        return false;
       }
 
-//      @Override
-//      protected ReactInstanceManager createReactInstanceManager() {
-//        String url = "http://" + AndroidInfoHelpers.getServerHost() + "/" + bundleRoot + ".bundle?platform=android&dev=true&minify=false";
-//        String cachedPath = "/data/user/0/com.simpleexample/files/" + bundleRoot + ".js";
-//        ReactInstanceManager manager = reactNative50DefaultBuilder()
-//                .setJSBundleLoader(JSBundleLoader.createCachedBundleFromNetworkLoader(url, cachedPath))
-//                .build();
-//
-//        manager.getDevSupportManager().handleReloadJS();
-//
-//        return manager;
-//      }
+      @Override
+      protected ReactInstanceManager createReactInstanceManager() {
+        ReactInstanceManagerBuilder builder = ReactInstanceManager.builder()
+                .setApplication(application)
+                .setJSMainModulePath(getJSMainModuleName())
+                .setUseDeveloperSupport(getUseDeveloperSupport())
+                .setRedBoxHandler(getRedBoxHandler())
+                .setJavaScriptExecutorFactory(getJavaScriptExecutorFactory())
+                .setInitialLifecycleState(LifecycleState.BEFORE_CREATE);
 
-//      private ReactInstanceManagerBuilder reactNative50DefaultBuilder() {
-//        ReactInstanceManagerBuilder builder = ReactInstanceManager.builder()
-//                .setApplication(application)
-//                .setJSMainModulePath(getJSMainModuleName())
-//                .setUseDeveloperSupport(getUseDeveloperSupport())
-//                .setRedBoxHandler(getRedBoxHandler())
-//                .setJavaScriptExecutorFactory(getJavaScriptExecutorFactory())
-//                .setUIImplementationProvider(getUIImplementationProvider())
-//                .setInitialLifecycleState(LifecycleState.BEFORE_CREATE);
-//
-//        for (ReactPackage reactPackage : getPackages()) {
-//          builder.addPackage(reactPackage);
-//        }
-//
-//        String jsBundleFile = getJSBundleFile();
-//        if (jsBundleFile != null) {
-//          builder.setJSBundleFile(jsBundleFile);
-//        } else {
-//          builder.setBundleAssetName(Assertions.assertNotNull(getBundleAssetName()));
-//        }
-//        return builder;
-//      }
+        for (ReactPackage reactPackage : getPackages()) {
+          builder.addPackage(reactPackage);
+        }
+
+        String jsBundleFile = getJSBundleFile();
+        if (jsBundleFile != null) {
+          builder.setJSBundleFile(jsBundleFile);
+        } else {
+          builder.setBundleAssetName(Assertions.assertNotNull(getBundleAssetName()));
+        }
+        return builder.build();
+      }
 
       @Override
       protected List<ReactPackage> getPackages() {
         final ArrayList<ReactPackage> allPackages = new ArrayList<>(Arrays.asList(packages));
-        allPackages.add(0, new WorkersPackage(packages));
+        allPackages.add(0, new WorkersInstancePackage());
         allPackages.add(0, new MainReactPackage());
         return allPackages;
       }
@@ -135,15 +178,12 @@ public class WorkersInstance implements ReactInstanceEventListener, LifecycleEve
 
   @ThreadConfined(UI)
   public void start() {
+    if (!isInitialized()) {
+      tryDelayedStart();
+      return;
+    }
     this.manager = this.host.getReactInstanceManager();
     this.manager.addReactInstanceEventListener(this);
-
-    // HACK.
-    // This forces react to actually load the worker code from the packager...
-    // Without this, it never asks, and the worker code is never loaded/found.
-    // It seems they have some hardcoded paths deep within their code, I can't
-    // find a way to play nicely with what they are doing.
-    host.getReactInstanceManager().getDevSupportManager().handleReloadJS();
 
     if (!this.manager.hasStartedCreatingInitialContext()) {
       this.manager.createReactContextInBackground();
@@ -218,11 +258,12 @@ public class WorkersInstance implements ReactInstanceEventListener, LifecycleEve
 
   @Override
   public void onReactContextInitialized(ReactContext context) {
-    context
-      .getNativeModule(WorkersInstanceManager.class)
-      .initialize(this.key, this.parentContext, this.startedPromise);
-
-    this.startedPromise = null;
+    if (this.startedPromise != null) {
+      context
+          .getNativeModule(WorkersInstanceManager.class)
+          .initialize(this.key, this.parentContext, this.startedPromise);
+      this.startedPromise = null;
+    }
   }
 
 }

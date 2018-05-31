@@ -1,4 +1,4 @@
-package com.jamesreggio.react.workers;
+package com.staltz.react.workers;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;
@@ -29,7 +29,6 @@ public class WorkersPackage implements ReactPackage {
   public List<NativeModule> createNativeModules(final ReactApplicationContext context) {
     List<NativeModule> modules = new ArrayList<>();
     modules.add(new WorkersManager(context, this.workerPackages));
-    modules.add(new WorkersInstanceManager(context));
     return modules;
   }
 
