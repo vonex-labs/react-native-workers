@@ -14,6 +14,7 @@ import com.facebook.react.bridge.WritableMap;
 
 import javax.annotation.Nullable;
 
+@ReactModule(name="WorkersInstanceManager")
 public class WorkersInstanceManager extends ReactContextBaseJavaModule {
 
   private final ReactContext context;
