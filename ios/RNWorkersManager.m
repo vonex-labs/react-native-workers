@@ -7,6 +7,7 @@
 #import <React/RCTAssert.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTLog.h>
+#import <React/RCTBridge.h>
 
 @interface CodePush
 + (NSURL *)bundleURL;
@@ -32,10 +33,6 @@ RCT_EXPORT_MODULE(WorkersManager);
 - (NSArray<NSString *> *)supportedEvents
 {
   return @[@"message"];
-}
-
-+ (BOOL)requiresMainQueueSetup {
-  return YES;
 }
 
 - (instancetype)init
@@ -123,7 +120,11 @@ RCT_EXPORT_METHOD(startWorker:(nonnull NSNumber *)key
     return @[worker, devSettings];
   };
 
+  // CodePush expects to only be instantiated once, so we have to skip it while
+  // setting up the bridge for the RNWorkers module.  See RCTBridge.m patch.
+  SetTwobirdSettingUpWorkersQueue(YES);
   RNWorkersBridge *workerBridge = [[RNWorkersBridge alloc] initWithBundleURL:workerURL moduleProvider:workerModuleProvider launchOptions:nil];
+  SetTwobirdSettingUpWorkersQueue(NO);
   [_bridges setObject:workerBridge forKey:key];
 }
 
