@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import com.facebook.infer.annotation.Assertions;
 import com.facebook.infer.annotation.ThreadConfined;
@@ -39,18 +40,20 @@ public class WorkersInstance implements ReactInstanceEventListener, LifecycleEve
   private final String bundleResource;
   private final Integer bundlerPort;
   private Promise startedPromise;
+  private WorkersManager workersManager;
 
   private ReactNativeHost host;
   private ReactInstanceManager manager;
 
   public WorkersInstance(
-    final Integer key,
-    final ReactApplicationContext parentContext,
-    final ReactPackage[] packages,
-    final String bundleRoot,
-    final String bundleResource,
-    final Integer bundlerPort,
-    final Promise startedPromise
+          final Integer key,
+          final ReactApplicationContext parentContext,
+          final ReactPackage[] packages,
+          final String bundleRoot,
+          final String bundleResource,
+          final Integer bundlerPort,
+          final Promise startedPromise,
+          final WorkersManager workersManager
   ) {
     this.key = key;
     this.parentContext = parentContext;
@@ -59,6 +62,7 @@ public class WorkersInstance implements ReactInstanceEventListener, LifecycleEve
     this.bundleResource = bundleResource;
     this.bundlerPort = bundlerPort;
     this.startedPromise = startedPromise;
+    this.workersManager = workersManager;
 
     if (canInitialize() && !isInitialized()) {
       initialize();
@@ -195,17 +199,28 @@ public class WorkersInstance implements ReactInstanceEventListener, LifecycleEve
     }
   }
 
+  private <T> T getObjectDelayed(T someObject){
+    int count = 0;
+    while (someObject == null && ++count < 50) {
+      Log.e(this.getClass().getSimpleName(), "getObjectDelayed: No object");
+      try {
+        Thread.sleep(50);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
+    return someObject;
+  }
+
   public void postMessage(final String message) {
     WritableMap body = Arguments.createMap();
     body.putInt("key", this.key);
     body.putString("message", message);
-
-    final ReactInstanceManager manager = Assertions.assertNotNull(this.manager);
-
+    ReactInstanceManager manager = getObjectDelayed(this.manager);
     Assertions
-      .assertNotNull(manager.getCurrentReactContext())
-      .getNativeModule(WorkersInstanceManager.class)
-      .emit("message", body);
+            .assertNotNull(getObjectDelayed(manager.getCurrentReactContext()))
+            .getNativeModule(WorkersInstanceManager.class)
+            .emit("message", body);
   }
 
   /**
@@ -221,8 +236,8 @@ public class WorkersInstance implements ReactInstanceEventListener, LifecycleEve
       @Override
       public void run() {
         manager.onHostResume(
-          activity,
-          null // No default back button implementation necessary.
+                activity,
+                null // No default back button implementation necessary.
         );
       }
     });
@@ -245,6 +260,7 @@ public class WorkersInstance implements ReactInstanceEventListener, LifecycleEve
   @ThreadConfined(UI)
   public void onHostDestroy() {
     final ReactInstanceManager manager = Assertions.assertNotNull(this.manager);
+    workersManager.stopWorker(key);
     // Use `destroy` instead of `onHostDestroy` to force the destruction
     // of the underlying JSContext.
     manager.destroy();
@@ -254,8 +270,8 @@ public class WorkersInstance implements ReactInstanceEventListener, LifecycleEve
   public void onReactContextInitialized(ReactContext context) {
     if (this.startedPromise != null) {
       context
-          .getNativeModule(WorkersInstanceManager.class)
-          .initialize(this.key, this.parentContext, this.startedPromise);
+              .getNativeModule(WorkersInstanceManager.class)
+              .initialize(this.key, this.parentContext, this.startedPromise);
       this.startedPromise = null;
     }
   }
