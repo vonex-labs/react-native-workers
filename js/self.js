@@ -4,7 +4,18 @@ const NativeModule = NativeModules.WorkersInstanceManager;
 const NativeEvents = new NativeEventEmitter(NativeModule);
 
 const self = {
-  postMessage(message) {
+  start() {
+    // Intentional no-op.
+    // As a worker instance, we eagerly connect to our parent below.
+  },
+
+  postMessage(message = null) {
+    try {
+      message = JSON.stringify(message);
+    } catch (error) {
+      console.warn('Unable to stringify message', message, error);
+    }
+
     NativeModule.postMessage(message);
   },
 };
