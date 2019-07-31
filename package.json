@@ -1,6 +1,6 @@
 {
   "name": "react-native-workers",
-  "version": "gl-0.6.6",
+  "version": "v0.6.6",
   "description": "React Native web workers",
   "author": "Garrett Mitchell",
   "license": "MIT",
