@@ -199,26 +199,12 @@ public class WorkersInstance implements ReactInstanceEventListener, LifecycleEve
     }
   }
 
-  private <T> T getObjectDelayed(T someObject){
-    int count = 0;
-    while (someObject == null && ++count < 50) {
-      Log.e(this.getClass().getSimpleName(), "getObjectDelayed: No object");
-      try {
-        Thread.sleep(50);
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      }
-    }
-    return someObject;
-  }
-
   public void postMessage(final String message) {
     WritableMap body = Arguments.createMap();
     body.putInt("key", this.key);
     body.putString("message", message);
-    ReactInstanceManager manager = getObjectDelayed(this.manager);
     Assertions
-            .assertNotNull(getObjectDelayed(manager.getCurrentReactContext()))
+            .assertNotNull(this.manager.getCurrentReactContext())
             .getNativeModule(WorkersInstanceManager.class)
             .emit("message", body);
   }
