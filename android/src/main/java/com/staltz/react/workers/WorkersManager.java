@@ -26,6 +26,11 @@ public class WorkersManager extends ReactContextBaseJavaModule {
 
   private final ReactApplicationContext context;
   private final ReactPackage packages[];
+  private Integer key;
+  private String bundleRoot;
+  private String bundleResource;
+  private Integer bundlerPort;
+  private Promise promise;
 
   private final HashMap<Integer, WorkersInstance> workers = new HashMap<>();
   private final List<Integer> bundlerPorts = new ArrayList<>();
@@ -59,6 +64,12 @@ public class WorkersManager extends ReactContextBaseJavaModule {
   ) {
     Assertions.assertCondition(!this.workers.containsKey(key), "Key already in use");
 
+    this.key = key;
+    this.bundleRoot = bundleRoot;
+    this.bundleResource = bundleResource;
+    this.bundlerPort = bundlerPort;
+    this.promise = promise;
+
     final boolean hasBundlerPort = this.allocateBundlerPort(bundlerPort);
 
     final WorkersInstance worker = new WorkersInstance(
@@ -68,7 +79,8 @@ public class WorkersManager extends ReactContextBaseJavaModule {
             bundleRoot,
             bundleResource,
             hasBundlerPort ? bundlerPort : null,
-            promise
+            promise,
+            this
     );
 
     this.workers.put(key, worker);
@@ -83,20 +95,16 @@ public class WorkersManager extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void stopWorker(final Integer key) {
-    final WorkersInstance worker = this.workers.remove(key);
-    Assertions.assertNotNull(worker);
-
-    new Handler(Looper.getMainLooper()).post(new Runnable() {
-      @Override
-      public void run() {
-        worker.stop();
-      }
-    });
+    this.workers.remove(key);
   }
 
   @ReactMethod
   public void postMessage(final Integer key, final String message) {
-    final WorkersInstance worker = this.workers.get(key);
+    WorkersInstance worker = this.workers.get(key);
+    if (worker == null) {
+      startWorker(this.key, this.bundleRoot, this.bundleResource, this.bundlerPort, this.promise);
+      worker = this.workers.get(key);
+    }
     Assertions.assertNotNull(worker).postMessage(message);
   }
 
