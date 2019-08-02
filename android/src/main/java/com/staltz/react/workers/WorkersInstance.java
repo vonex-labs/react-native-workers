@@ -248,6 +248,7 @@ public class WorkersInstance implements ReactInstanceEventListener, LifecycleEve
   @ThreadConfined(UI)
   public void onHostDestroy() {
     final ReactInstanceManager manager = Assertions.assertNotNull(this.manager);
+    workersManager.stopWorker(this.key);
     // Use `destroy` instead of `onHostDestroy` to force the destruction
     // of the underlying JSContext.
     manager.destroy();
