@@ -79,8 +79,7 @@ public class WorkersManager extends ReactContextBaseJavaModule {
             bundleRoot,
             bundleResource,
             hasBundlerPort ? bundlerPort : null,
-            promise,
-            this
+            promise
     );
 
     this.workers.put(key, worker);
