@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import com.facebook.infer.annotation.Assertions;
 import com.facebook.infer.annotation.ThreadConfined;
@@ -39,6 +40,7 @@ public class WorkersInstance implements ReactInstanceEventListener, LifecycleEve
   private final String bundleResource;
   private final Integer bundlerPort;
   private Promise startedPromise;
+  private WorkersManager workersManager;
 
   private ReactNativeHost host;
   private ReactInstanceManager manager;
@@ -50,7 +52,8 @@ public class WorkersInstance implements ReactInstanceEventListener, LifecycleEve
     final String bundleRoot,
     final String bundleResource,
     final Integer bundlerPort,
-    final Promise startedPromise
+    final Promise startedPromise,
+    final WorkersManager workersManager
   ) {
     this.key = key;
     this.parentContext = parentContext;
@@ -59,6 +62,7 @@ public class WorkersInstance implements ReactInstanceEventListener, LifecycleEve
     this.bundleResource = bundleResource;
     this.bundlerPort = bundlerPort;
     this.startedPromise = startedPromise;
+    this.workersManager = workersManager;
 
     if (canInitialize() && !isInitialized()) {
       initialize();
@@ -200,6 +204,15 @@ public class WorkersInstance implements ReactInstanceEventListener, LifecycleEve
     body.putInt("key", this.key);
     body.putString("message", message);
 
+    while (this.manager == null || this.manager.getCurrentReactContext() == null) {
+      Log.e(this.getClass().getSimpleName(), "postMessage: manager not ready, waiting.");
+      try {
+        Thread.sleep(20);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
+
     final ReactInstanceManager manager = Assertions.assertNotNull(this.manager);
 
     Assertions
@@ -245,6 +258,7 @@ public class WorkersInstance implements ReactInstanceEventListener, LifecycleEve
   @ThreadConfined(UI)
   public void onHostDestroy() {
     final ReactInstanceManager manager = Assertions.assertNotNull(this.manager);
+    workersManager.stopWorker(this.key);
     // Use `destroy` instead of `onHostDestroy` to force the destruction
     // of the underlying JSContext.
     manager.destroy();
