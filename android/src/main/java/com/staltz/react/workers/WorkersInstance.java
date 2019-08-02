@@ -39,7 +39,6 @@ public class WorkersInstance implements ReactInstanceEventListener, LifecycleEve
   private final String bundleResource;
   private final Integer bundlerPort;
   private Promise startedPromise;
-  private WorkersManager workersManager;
 
   private ReactNativeHost host;
   private ReactInstanceManager manager;
@@ -51,8 +50,7 @@ public class WorkersInstance implements ReactInstanceEventListener, LifecycleEve
     final String bundleRoot,
     final String bundleResource,
     final Integer bundlerPort,
-    final Promise startedPromise,
-    final WorkersManager workersManager
+    final Promise startedPromise
   ) {
     this.key = key;
     this.parentContext = parentContext;
@@ -61,7 +59,6 @@ public class WorkersInstance implements ReactInstanceEventListener, LifecycleEve
     this.bundleResource = bundleResource;
     this.bundlerPort = bundlerPort;
     this.startedPromise = startedPromise;
-    this.workersManager = workersManager;
 
     if (canInitialize() && !isInitialized()) {
       initialize();
