@@ -95,7 +95,15 @@ public class WorkersManager extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void stopWorker(final Integer key) {
-    this.workers.remove(key);
+    final WorkersInstance worker = this.workers.remove(key);
+    if (worker == null) return;
+
+    new Handler(Looper.getMainLooper()).post(new Runnable() {
+      @Override
+      public void run() {
+        worker.stop();
+      }
+    });
   }
 
   @ReactMethod
