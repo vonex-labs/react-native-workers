@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import com.facebook.infer.annotation.Assertions;
 import com.facebook.infer.annotation.ThreadConfined;
@@ -202,6 +203,15 @@ public class WorkersInstance implements ReactInstanceEventListener, LifecycleEve
     WritableMap body = Arguments.createMap();
     body.putInt("key", this.key);
     body.putString("message", message);
+
+    while (this.manager == null || this.manager.getCurrentReactContext() == null) {
+      Log.e(this.getClass().getSimpleName(), "postMessage: manager not ready, waiting.");
+      try {
+        Thread.sleep(20);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
 
     final ReactInstanceManager manager = Assertions.assertNotNull(this.manager);
 
