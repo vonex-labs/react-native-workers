@@ -28,6 +28,21 @@ RCT_EXPORT_MODULE(WorkersInstanceManager);
   _valid = NO;
 }
 
+- (dispatch_queue_t)methodQueue
+{
+  return RCTGetMethodQueue();
+}
+
+static dispatch_queue_t RCTGetMethodQueue()
+{
+  static dispatch_queue_t queue;
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    queue = dispatch_queue_create("com.vonex.reactnative.worker", DISPATCH_QUEUE_SERIAL);
+  });
+  return queue;
+}
+
 RCT_EXPORT_METHOD(workerStarted)
 {
   // The worker bridge may initialize and then quickly restart when debugging remotely.
